@@ -14,14 +14,22 @@ import os
 
 from pydriller import Repository
 
+# this block extracts the name of the repo then uses it to name the folder where csv files go
+REPO_URI = ""
+uri_tokens = REPO_URI.split(sep="/")
+data_folder = uri_tokens[3]
+os.mkdir(f"{data_folder}-data")
+devs_csv = os.path.join(f"{data_folder}-data", "devs.csv")
+
 DEVS = set()
-for commit in Repository("").traverse_commits():
+for commit in Repository(REPO_URI).traverse_commits():
     DEVS.add((commit.author.name, commit.author.email))
     DEVS.add((commit.committer.name, commit.committer.email))
 
 DEVS = sorted(DEVS)
 
-with open("devs.csv", "w", newline="") as csvfile:
+# with open("devs.csv", "w", newline="") as csvfile:
+with open(devs_csv, "w", newline="") as csvfile:
     writer = csv.writer(csvfile, delimiter=",", quotechar='"')
     writer.writerow(["name", "email"])
     writer.writerows(DEVS)
@@ -30,7 +38,8 @@ with open("devs.csv", "w", newline="") as csvfile:
 
 DEVS = []
 # Read csv file with name,dev columns
-with open("devs.csv", "r", newline="") as csvfile:
+# with open("devs.csv", "r", newline="") as csvfile:
+with open(devs_csv, "r", newline="") as csvfile:
     reader = csv.reader(csvfile, delimiter=",")
     for row in reader:
         DEVS.append(row)
@@ -107,6 +116,7 @@ for dev_a, dev_b in combinations(DEVS, 2):
     )
 
 print(f"Pairs: {len(SIMILARITY)}")
+print("__________________________")
 
 
 # Save data on all pairs (might be too big -> comment out to avoid)
@@ -125,35 +135,49 @@ cols = [
     "c7",
 ]
 df = pd.DataFrame(SIMILARITY, columns=cols)
-df.to_csv("devs_similarity.csv", index=False, header=True)
+# df.to_csv("devs_similarity.csv", index=False, header=True)
+df.to_csv(
+    os.path.join(f"{data_folder}-data", "devs_similarity.csv"), index=False, header=True
+)
 
 
 # Set similarity threshold, check c1-c3 against the threshold
-t = 0.99
-print("Threshold:", t)
-df["c1_check"] = df["c1"] >= t
-df["c2_check"] = df["c2"] >= t
-df["c3_check"] = (df["c3.1"] >= t) & (df["c3.2"] >= t)
-# Keep only rows where at least one condition is True
-df = df[df[["c1_check", "c2_check", "c3_check", "c4", "c5", "c6", "c7"]].any(axis=1)]
-
-print(f"Limited Pairs: {len(df)}")
-
-# Omit "check" columns, save to csv
-df = df[
-    [
-        "name_1",
-        "email_1",
-        "name_2",
-        "email_2",
-        "c1",
-        "c2",
-        "c3.1",
-        "c3.2",
-        "c4",
-        "c5",
-        "c6",
-        "c7",
+# a csv file will be created for every threshold value, you may add or edit to the list
+for t in [0.5, 0.6, 0.7, 0.8, 0.9, 1]:
+    # t = 0.99
+    print("Threshold:", t)
+    df["c1_check"] = df["c1"] >= t
+    df["c2_check"] = df["c2"] >= t
+    df["c3_check"] = (df["c3.1"] >= t) & (df["c3.2"] >= t)
+    # Keep only rows where at least one condition is True
+    df = df[
+        df[["c1_check", "c2_check", "c3_check", "c4", "c5", "c6", "c7"]].any(axis=1)
     ]
-]
-df.to_csv(f"devs_similarity_t={t}.csv", index=False, header=True)
+
+    print(f"Limited Pairs: {len(df)}")
+    print("__________________________")
+
+    # Omit "check" columns, save to csv
+    df = df[
+        [
+            "name_1",
+            "email_1",
+            "name_2",
+            "email_2",
+            "c1",
+            "c2",
+            "c3.1",
+            "c3.2",
+            "c4",
+            "c5",
+            "c6",
+            "c7",
+        ]
+    ]
+
+    # df.to_csv(f"devs_similarity_t={t}.csv", index=False, header=True)
+    df.to_csv(
+        os.path.join(f"{data_folder}-data", f"devs_similarity_t={t}.csv"),
+        index=False,
+        header=True,
+    )
