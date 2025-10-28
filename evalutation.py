@@ -6,7 +6,11 @@ from tools import process
 
 
 def similarity_default(
-    devs: list[list[str]], data_folder: str, email_check: bool, thresholds: list[float]
+    devs: list[list[str]],
+    data_folder: str,
+    email_check: bool,
+    generic_prefixes: set[str],
+    thresholds: list[float],
 ):
     """
     Calculates similarity between developer name pairs using the Bird heuristic.
@@ -42,7 +46,6 @@ def similarity_default(
         # Conditions of Bird heuristic
         c1 = sim(name_a, name_b)
         # CHECK FOR A SAME EMAIL-PREFIX
-        generic_prefixes = {"mail", "github", "git", "info"}
         if (
             prefix_a in generic_prefixes or prefix_b in generic_prefixes
         ) and email_check:
@@ -146,7 +149,7 @@ def similarity_default(
         df.to_csv(
             os.path.join(
                 f"{data_folder}-data",
-                f"devs_similarity{"_email_check" if email_check else ""}_t={t}.csv",
+                f"devs_similarity{"_email_check=" if email_check else "_"}{len(generic_prefixes)}_t={t}.csv",
             ),
             index=False,
             header=True,
@@ -154,7 +157,11 @@ def similarity_default(
 
 
 def similarity_no_c4c7(
-    devs: list[list[str]], data_folder: str, email_check: bool, thresholds: list[float]
+    devs: list[list[str]],
+    data_folder: str,
+    email_check: bool,
+    generic_prefixes: set[str],
+    thresholds: list[float],
 ):
     """
     Calculates similarity between developer name pairs using the Bird heuristic.
@@ -190,7 +197,6 @@ def similarity_no_c4c7(
         # Conditions of Bird heuristic
         c1 = sim(name_a, name_b)
         # CHECK FOR A SAME EMAIL-PREFIX
-        generic_prefixes = {"mail", "github", "git", "info"}
         if (
             prefix_a in generic_prefixes or prefix_b in generic_prefixes
         ) and email_check:
@@ -260,7 +266,7 @@ def similarity_no_c4c7(
         df.to_csv(
             os.path.join(
                 f"{data_folder}-data",
-                f"devs_similarity_no_c4c7{"_email_check" if email_check else ""}_t={t}.csv",
+                f"devs_similarity_no_c4c7{"_email_check=" if email_check else "_"}{len(generic_prefixes)}_t={t}.csv",
             ),
             index=False,
             header=True,
