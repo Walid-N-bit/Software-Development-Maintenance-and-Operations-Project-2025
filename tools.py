@@ -32,7 +32,6 @@ def get_repository(repo_uri: str) -> tuple[list[list[str]], str]:
     uri_tokens = repo_uri.split(sep="/")
     data_folder = uri_tokens[4].split(".git")[0]
     try:
-
         os.mkdir(f"{data_folder}-data")
         devs_csv = os.path.join(f"{data_folder}-data", "devs.csv")
         DEVS = set()

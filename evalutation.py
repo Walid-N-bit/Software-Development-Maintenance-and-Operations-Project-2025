@@ -6,7 +6,7 @@ from tools import process
 
 
 def similarity_default(
-    devs: list[list[str]], data_folder, email_check: bool, threshholds: list[float]
+    devs: list[list[str]], data_folder: str, email_check: bool, thresholds: list[float]
 ):
     """
     Calculates similarity between developer name pairs using the Bird heuristic.
@@ -43,7 +43,9 @@ def similarity_default(
         c1 = sim(name_a, name_b)
         # CHECK FOR A SAME EMAIL-PREFIX
         generic_prefixes = {"mail", "github", "git", "info"}
-        if prefix_a in generic_prefixes or prefix_b in generic_prefixes and email_check:
+        if (
+            prefix_a in generic_prefixes or prefix_b in generic_prefixes
+        ) and email_check:
             c2 = 0
         else:
             c2 = sim(prefix_a, prefix_b)
@@ -95,8 +97,7 @@ def similarity_default(
 
     # Set similarity threshold, check c1-c3 against the threshold
     # a csv file will be created for every threshold value, you may add or edit to the list
-    for t in threshholds:
-        # t = 0.99
+    for t in thresholds:
         print("Threshold:", t)
         df["c1_check"] = df["c1"] >= t
         df["c2_check"] = df["c2"] >= t
@@ -153,7 +154,7 @@ def similarity_default(
 
 
 def similarity_no_c4c7(
-    devs: list[list[str]], data_folder, email_check: bool, threshholds: list[float]
+    devs: list[list[str]], data_folder: str, email_check: bool, thresholds: list[float]
 ):
     """
     Calculates similarity between developer name pairs using the Bird heuristic.
@@ -190,7 +191,9 @@ def similarity_no_c4c7(
         c1 = sim(name_a, name_b)
         # CHECK FOR A SAME EMAIL-PREFIX
         generic_prefixes = {"mail", "github", "git", "info"}
-        if prefix_a in generic_prefixes or prefix_b in generic_prefixes and email_check:
+        if (
+            prefix_a in generic_prefixes or prefix_b in generic_prefixes
+        ) and email_check:
             c2 = 0
         else:
             c2 = sim(prefix_a, prefix_b)
@@ -224,7 +227,7 @@ def similarity_no_c4c7(
 
     # Set similarity threshold, check c1-c3 against the threshold
     # a csv file will be created for every threshold value, you may add or edit to the list
-    for t in threshholds:
+    for t in thresholds:
         # t = 0.99
         print("Threshold:", t)
         df["c1_check"] = df["c1"] >= t
