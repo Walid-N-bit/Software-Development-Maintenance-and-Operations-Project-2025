@@ -143,7 +143,10 @@ def similarity_default(
         df.insert(0, "true_pos", 0)
 
         df.to_csv(
-            os.path.join(f"{data_folder}-data", f"devs_similarity_t={t}.csv"),
+            os.path.join(
+                f"{data_folder}-data",
+                f"devs_similarity{"_email_check" if email_check else ""}_t={t}.csv",
+            ),
             index=False,
             header=True,
         )
@@ -252,7 +255,10 @@ def similarity_no_c4c7(
         df.insert(0, "true_pos", 0)
 
         df.to_csv(
-            os.path.join(f"{data_folder}-data", f"devs_similarity_no_c4c7_t={t}.csv"),
+            os.path.join(
+                f"{data_folder}-data",
+                f"devs_similarity_no_c4c7{"_email_check" if email_check else ""}_t={t}.csv",
+            ),
             index=False,
             header=True,
         )
