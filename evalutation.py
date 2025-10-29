@@ -149,7 +149,7 @@ def similarity_default(
         df.to_csv(
             os.path.join(
                 f"{data_folder}-data",
-                f"devs_similarity{"_email_check=" if email_check else "_"}{len(generic_prefixes)}_t={t}.csv",
+                f"devs_similarity{"_email_check=" if email_check else ""}{len(generic_prefixes) if email_check else ""}_t={t}.csv",
             ),
             index=False,
             header=True,
@@ -266,7 +266,7 @@ def similarity_no_c4c7(
         df.to_csv(
             os.path.join(
                 f"{data_folder}-data",
-                f"devs_similarity_no_c4c7{"_email_check=" if email_check else "_"}{len(generic_prefixes)}_t={t}.csv",
+                f"devs_similarity_no_c4c7{"_email_check=" if email_check else ""}{len(generic_prefixes) if email_check else ""}_t={t}.csv",
             ),
             index=False,
             header=True,
