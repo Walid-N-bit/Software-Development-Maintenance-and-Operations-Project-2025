@@ -123,3 +123,41 @@ def process(dev: list[str]) -> tuple[str, str, str, str, str, str, str]:
     prefix = email.split("@")[0]
 
     return name, first, last, i_first, i_last, email, prefix
+
+
+def most_common_prefixes(devs: list[list[str]], number: int):
+    """
+    Finds the most common email prefixes and prints the specified number of them.
+
+    Args
+    -------
+    dev : list[list[str]]
+        Full list of devs from devs.csv
+
+    number : int
+        The number of prefixes to include in the print.
+    """
+    most_common_prefixes = {}
+
+    for dev in devs:
+        prefix = dev[1].split("@")[0]
+        if prefix in most_common_prefixes.keys():
+            most_common_prefixes[prefix] += 1
+        else:
+            most_common_prefixes[prefix] = 1
+
+        # Get the 10 most common prefixes
+    most_common_prefixes = dict(
+        sorted(
+            most_common_prefixes.items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )[:number]
+    )
+    print("Most common prefixes in devs: ")
+    longest_prefix = max(len(i) for i in most_common_prefixes) + 1
+    for i in range(len(most_common_prefixes)):
+        print(
+            f"{str(list(most_common_prefixes.keys())[i]).rjust(longest_prefix, " ")}: {list(most_common_prefixes.values())[i]}"
+        )
+    print("__________________________")

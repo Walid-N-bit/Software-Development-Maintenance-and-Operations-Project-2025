@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from itertools import combinations
 from Levenshtein import ratio as sim
-from tools import process
+from tools import process, most_common_prefixes
 
 
 def similarity_default(
@@ -38,6 +38,10 @@ def similarity_default(
             Filtered pairs meeting threshold criteria (one per threshold)
     """
     SIMILARITY = []
+
+    # print the 10 most common email prefixes
+    most_common_prefixes(devs, 10)
+
     for dev_a, dev_b in combinations(devs, 2):
         # Pre-process both developers
         name_a, first_a, last_a, i_first_a, i_last_a, email_a, prefix_a = process(dev_a)
@@ -189,6 +193,10 @@ def similarity_no_c4c7(
             Filtered pairs meeting threshold criteria (one per threshold)
     """
     SIMILARITY = []
+
+    # print the 10 most common email prefixes
+    most_common_prefixes(devs, 10)
+
     for dev_a, dev_b in combinations(devs, 2):
         # Pre-process both developers
         name_a, first_a, last_a, _, _, email_a, prefix_a = process(dev_a)
