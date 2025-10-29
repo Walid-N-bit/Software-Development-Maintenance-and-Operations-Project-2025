@@ -36,7 +36,7 @@ for row in annotated_csv:
 
 # need to have folder named annotated or change to whatever
 new_annotated_path = os.path.join(
-    f"annotated/{new_path.split("/")[1].split(".")[0]}_ANNOTATED.csv"
+    f"annotated/{new_path.split("/")[1].split(".csv")[0]}_ANNOTATED.csv"
 )
 
 # Expects no c4 -c7
