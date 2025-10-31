@@ -14,6 +14,9 @@ for file in files:
         for row in reader:
             rows.append(row)
     # First element is header, skip
+    headers = rows[0]
+    if headers[0] != "true_pos":
+        continue
     rows = rows[1:]
     pos = len(rows)
     tp = len([row for row in rows if int(row[0]) == 1])
