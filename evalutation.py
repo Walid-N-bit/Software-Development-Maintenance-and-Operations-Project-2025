@@ -5,7 +5,15 @@ from Levenshtein import ratio as sim
 from tools import process, most_common_prefixes
 
 
-def bird_c1_c3(dev_a, dev_b, generic_prefixes, email_check):
+def bird_c1_c3(
+    dev_a: list[str],
+    dev_b: list[str],
+    generic_prefixes: set[str],
+    email_check: bool,
+):
+    """
+    Calculates the first three conditions of the Bird heuristic.
+    """
     name_a, first_a, last_a, _, _, email_a, prefix_a = process(dev_a)
     name_b, first_b, last_b, _, _, email_b, prefix_b = process(dev_b)
     # Conditions of Bird heuristic
@@ -21,7 +29,10 @@ def bird_c1_c3(dev_a, dev_b, generic_prefixes, email_check):
     return c1, c2, c31, c32, email_a, email_b
 
 
-def bird_c4_c7(dev_a, dev_b):
+def bird_c4_c7(dev_a: list[str], dev_b: list[str]):
+    """
+    Calculates conditions c4 to c7 of the Bird heuristic.
+    """
     _, first_a, last_a, i_first_a, i_last_a, _, prefix_a = process(dev_a)
     _, first_b, last_b, i_first_b, i_last_b, _, prefix_b = process(dev_b)
     c4 = c5 = c6 = c7 = False
