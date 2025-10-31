@@ -6,7 +6,6 @@ from tools import process, most_common_prefixes
 
 
 def bird_c1_c3(dev_a, dev_b, generic_prefixes, email_check):
-
     name_a, first_a, last_a, _, _, email_a, prefix_a = process(dev_a)
     name_b, first_b, last_b, _, _, email_b, prefix_b = process(dev_b)
     # Conditions of Bird heuristic
@@ -212,21 +211,9 @@ def similarity_no_c4c7(
     most_common_prefixes(devs, 10)
 
     for dev_a, dev_b in combinations(devs, 2):
-        # Pre-process both developers
-        name_a, first_a, last_a, _, _, email_a, prefix_a = process(dev_a)
-        name_b, first_b, last_b, _, _, email_b, prefix_b = process(dev_b)
-
-        # Conditions of Bird heuristic
-        c1 = sim(name_a, name_b)
-        # CHECK FOR A SAME EMAIL-PREFIX
-        if (
-            prefix_a in generic_prefixes or prefix_b in generic_prefixes
-        ) and email_check:
-            c2 = 0
-        else:
-            c2 = sim(prefix_a, prefix_b)
-        c31 = sim(first_a, first_b)
-        c32 = sim(last_a, last_b)
+        c1, c2, c31, c32, email_a, email_b = bird_c1_c3(
+            dev_a, dev_b, generic_prefixes, email_check
+        )
 
         # Similarity without c4 - c7
         SIMILARITY.append([dev_a[0], email_a, dev_b[0], email_b, c1, c2, c31, c32])
