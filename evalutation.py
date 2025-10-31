@@ -5,6 +5,40 @@ from Levenshtein import ratio as sim
 from tools import process, most_common_prefixes
 
 
+def bird_c1_c3(dev_a, dev_b, generic_prefixes, email_check):
+
+    name_a, first_a, last_a, _, _, email_a, prefix_a = process(dev_a)
+    name_b, first_b, last_b, _, _, email_b, prefix_b = process(dev_b)
+    # Conditions of Bird heuristic
+    c1 = sim(name_a, name_b)
+    # CHECK FOR A SAME EMAIL-PREFIX
+    if (prefix_a in generic_prefixes or prefix_b in generic_prefixes) and email_check:
+        c2 = 0
+    else:
+        c2 = sim(prefix_a, prefix_b)
+    c31 = sim(first_a, first_b)
+    c32 = sim(last_a, last_b)
+
+    return c1, c2, c31, c32, email_a, email_b
+
+
+def bird_c4_c7(dev_a, dev_b):
+    _, first_a, last_a, i_first_a, i_last_a, _, prefix_a = process(dev_a)
+    _, first_b, last_b, i_first_b, i_last_b, _, prefix_b = process(dev_b)
+    c4 = c5 = c6 = c7 = False
+    # Since lastname and initials can be empty, perform appropriate checks
+    if i_first_a != "" and last_a != "":
+        c4 = i_first_a in prefix_b and last_a in prefix_b
+    if i_last_a != "":
+        c5 = i_last_a in prefix_b and first_a in prefix_b
+    if i_first_b != "" and last_b != "":
+        c6 = i_first_b in prefix_a and last_b in prefix_a
+    if i_last_b != "":
+        c7 = i_last_b in prefix_a and first_b in prefix_a
+
+    return c4, c5, c6, c7
+
+
 def similarity_default(
     devs: list[list[str]],
     data_folder: str,
@@ -44,31 +78,11 @@ def similarity_default(
 
     for dev_a, dev_b in combinations(devs, 2):
         # Pre-process both developers
-        name_a, first_a, last_a, i_first_a, i_last_a, email_a, prefix_a = process(dev_a)
-        name_b, first_b, last_b, i_first_b, i_last_b, email_b, prefix_b = process(dev_b)
+        c1, c2, c31, c32, email_a, email_b = bird_c1_c3(
+            dev_a, dev_b, generic_prefixes, email_check
+        )
 
-        # Conditions of Bird heuristic
-        c1 = sim(name_a, name_b)
-        # CHECK FOR A SAME EMAIL-PREFIX
-        if (
-            prefix_a in generic_prefixes or prefix_b in generic_prefixes
-        ) and email_check:
-            c2 = 0
-        else:
-            c2 = sim(prefix_a, prefix_b)
-        c31 = sim(first_a, first_b)
-        c32 = sim(last_a, last_b)
-
-        c4 = c5 = c6 = c7 = False
-        # Since lastname and initials can be empty, perform appropriate checks
-        if i_first_a != "" and last_a != "":
-            c4 = i_first_a in prefix_b and last_a in prefix_b
-        if i_last_a != "":
-            c5 = i_last_a in prefix_b and first_a in prefix_b
-        if i_first_b != "" and last_b != "":
-            c6 = i_first_b in prefix_a and last_b in prefix_a
-        if i_last_b != "":
-            c7 = i_last_b in prefix_a and first_b in prefix_a
+        c4, c5, c6, c7 = bird_c4_c7(dev_a, dev_b)
 
         # Save similarity data for each conditions. Original names are saved
         SIMILARITY.append(
@@ -242,7 +256,6 @@ def similarity_no_c4c7(
     # Set similarity threshold, check c1-c3 against the threshold
     # a csv file will be created for every threshold value, you may add or edit to the list
     for t in thresholds:
-        # t = 0.99
         print("Threshold:", t)
         df["c1_check"] = df["c1"] >= t
         df["c2_check"] = df["c2"] >= t
