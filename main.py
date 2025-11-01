@@ -1,7 +1,7 @@
 from tools import get_repository
 
 # import all evaluation functions
-from evalutation import *
+from evalutation import similarity_default, similarity_no_c4c7, similarity_modified_bird
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
 
     # If more similarity versions, add booleans or make a new function
     # similarity_default(devs, folder_path, email_check, generic_prefixes, thresholds)
-    # similarity_no_c4c7(devs, folder_path, email_check, prefix_to_ignore, thresholds)
+    similarity_no_c4c7(devs, folder_path, email_check, prefix_to_ignore, thresholds)
     # similarity_modified_bird(
     #     devs, folder_path, email_check, generic_prefixes, thresholds
     # )

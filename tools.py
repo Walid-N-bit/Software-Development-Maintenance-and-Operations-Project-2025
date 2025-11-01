@@ -30,10 +30,11 @@ def get_repository(repo_uri: str) -> tuple[list[list[str]], str]:
         - The second element is the repository base name used for the data folder.
     """
     uri_tokens = repo_uri.split(sep="/")
-    data_folder = uri_tokens[4].split(".git")[0]
+    data_folder = uri_tokens[4].split(".git")[0] + "-data"
+    devs_csv = os.path.join(f"{data_folder}", "devs.csv")
+
     try:
-        os.mkdir(f"{data_folder}-data")
-        devs_csv = os.path.join(f"{data_folder}-data", "devs.csv")
+        os.mkdir(f"{data_folder}")
         DEVS = set()
         for commit in Repository(repo_uri).traverse_commits():
             DEVS.add((commit.author.name, commit.author.email))
@@ -46,7 +47,7 @@ def get_repository(repo_uri: str) -> tuple[list[list[str]], str]:
             writer.writerow(["name", "email"])
             writer.writerows(DEVS)
     except FileExistsError:
-        devs_csv = os.path.join(f"{data_folder}-data", "devs.csv")
+        print(f"Using existing data folder: {data_folder}")
 
     # This block of code reads an existing csv of developers
     DEVS = []

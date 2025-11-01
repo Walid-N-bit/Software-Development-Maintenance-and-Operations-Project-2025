@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from itertools import combinations
 from Levenshtein import ratio as sim
-from tools import process, most_common_prefixes
+from .tools import process, most_common_prefixes
 
 
 def bird_c1_c3(
@@ -39,10 +39,13 @@ def bird_c4_c7(dev_a: list[str], dev_b: list[str]):
     # Since lastname and initials can be empty, perform appropriate checks
     if i_first_a != "" and last_a != "":
         c4 = i_first_a in prefix_b and last_a in prefix_b
+
     if i_last_a != "":
         c5 = i_last_a in prefix_b and first_a in prefix_b
+
     if i_first_b != "" and last_b != "":
         c6 = i_first_b in prefix_a and last_b in prefix_a
+
     if i_last_b != "":
         c7 = i_last_b in prefix_a and first_b in prefix_a
 
@@ -121,7 +124,7 @@ def similarity_default(
     df = pd.DataFrame(SIMILARITY, columns=cols)
 
     df.to_csv(
-        os.path.join(f"{data_folder}-data", "devs_similarity.csv"),
+        os.path.join(f"{data_folder}", "devs_similarity.csv"),
         index=False,
         header=True,
     )
@@ -176,7 +179,7 @@ def similarity_default(
 
         df.to_csv(
             os.path.join(
-                f"{data_folder}-data",
+                f"{data_folder}",
                 f"devs_similarity{"_email_check=" if email_check else ""}{len(generic_prefixes) if email_check else ""}_t={t}.csv",
             ),
             index=False,
@@ -246,7 +249,7 @@ def similarity_no_c4c7(
     df = pd.DataFrame(SIMILARITY, columns=cols)
 
     df.to_csv(
-        os.path.join(f"{data_folder}-data", "devs_similarity.csv"),
+        os.path.join(f"{data_folder}", "devs_similarity.csv"),
         index=False,
         header=True,
     )
@@ -284,7 +287,7 @@ def similarity_no_c4c7(
 
         df.to_csv(
             os.path.join(
-                f"{data_folder}-data",
+                f"{data_folder}",
                 f"devs_similarity_no_c4c7{"_email_check=" if email_check else ""}{len(generic_prefixes) if email_check else ""}_t={t}.csv",
             ),
             index=False,
@@ -293,6 +296,37 @@ def similarity_no_c4c7(
 
 
 from pyjarowinkler.distance import get_jaro_winkler_similarity as jaro_win_sim
+
+
+def jaro_c1_c4(
+    dev_a: list[str], dev_b: list[str], generic_prefixes: set[str], email_check: bool
+):
+    # Pre-process both developers
+    name_a, first_a, last_a, i_first_a, i_last_a, email_a, prefix_a = process(dev_a)
+    name_b, first_b, last_b, i_first_b, i_last_b, email_b, prefix_b = process(dev_b)
+
+    # Conditions
+    c1 = jaro_win_sim(name_a, name_b, ignore_case=True)
+    if (prefix_a in generic_prefixes or prefix_b in generic_prefixes) and email_check:
+        c2 = 0
+    else:
+        c2 = jaro_win_sim(prefix_a, prefix_b, ignore_case=True)
+
+    c3 = 0
+    c4 = 0
+    if i_first_a != "" and last_a != "" and i_first_b != "" and last_b != "":
+        c3 = jaro_win_sim(
+            "".join((i_first_a, last_a)),
+            "".join((i_first_b, last_b)),
+            ignore_case=True,
+        )
+    if i_last_a != "" and first_a != "" and i_last_b != "" and first_b != "":
+        c4 = jaro_win_sim(
+            "".join((i_last_a, first_a)),
+            "".join((i_last_b, first_b)),
+            ignore_case=True,
+        )
+    return c1, c2, c3, c4, email_a, email_b
 
 
 def similarity_modified_bird(
@@ -335,33 +369,9 @@ def similarity_modified_bird(
     # print the 10 most common email prefixes
     most_common_prefixes(devs, 10)
     for dev_a, dev_b in combinations(devs, 2):
-        # Pre-process both developers
-        name_a, first_a, last_a, i_first_a, i_last_a, email_a, prefix_a = process(dev_a)
-        name_b, first_b, last_b, i_first_b, i_last_b, email_b, prefix_b = process(dev_b)
-
-        # Conditions
-        c1 = jaro_win_sim(name_a, name_b, ignore_case=True)
-        if (
-            prefix_a in generic_prefixes or prefix_b in generic_prefixes
-        ) and email_check:
-            c2 = 0
-        else:
-            c2 = jaro_win_sim(prefix_a, prefix_b, ignore_case=True)
-
-        c3 = 0
-        c4 = 0
-        if i_first_a != "" and last_a != "" and i_first_b != "" and last_b != "":
-            c3 = jaro_win_sim(
-                "".join((i_first_a, last_a)),
-                "".join((i_first_b, last_b)),
-                ignore_case=True,
-            )
-        if i_last_a != "" and first_a != "" and i_last_b != "" and first_b != "":
-            c4 = jaro_win_sim(
-                "".join((i_last_a, first_a)),
-                "".join((i_last_b, first_b)),
-                ignore_case=True,
-            )
+        c1, c2, c3, c4, email_a, email_b = jaro_c1_c4(
+            dev_a, dev_b, generic_prefixes, email_check
+        )
         # Save similarity data for each conditions. Original names are saved
         SIMILARITY.append([dev_a[0], email_a, dev_b[0], email_b, c1, c2, c3, c4])
 
@@ -382,7 +392,7 @@ def similarity_modified_bird(
     df = pd.DataFrame(SIMILARITY, columns=cols)
 
     df.to_csv(
-        os.path.join(f"{data_folder}-data", "devs_jw_similarity.csv"),
+        os.path.join(f"{data_folder}", "devs_jw_similarity.csv"),
         index=False,
         header=True,
     )
@@ -431,11 +441,9 @@ def similarity_modified_bird(
 
         df.to_csv(
             os.path.join(
-                f"{data_folder}-data",
+                f"{data_folder}",
                 f"devs_jw_similarity{"_email_check=" if email_check else ""}{len(generic_prefixes) if email_check else ""}_t={t}.csv",
             ),
             index=False,
             header=True,
         )
-
-
