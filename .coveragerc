@@ -1,0 +1,21 @@
+[run]
+omit =
+    tests/*
+    __init__.py
+    main.py
+
+[report]
+show_missing = True
+skip_covered = False
+
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    def main\(\):
+
+[pytest]
+# Run tests in this specific order
+testpaths = tests
+python_files = 
+    test_tools.py
+    test_evaluation.py

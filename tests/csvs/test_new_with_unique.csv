@@ -1,0 +1,6 @@
+true_pos,name_1,email_1,name_2,email_2,c1,c2,c3.1,c3.2
+0,Aki Rodic,rodic@adobe.com,Aki Rodić,aleksandar.xyz@gmail.com,1.0,0.10526315789473684,1.0,1.0
+0,Aki Rodić,aleksandar.xyz@gmail.com,Aleksandar Rodic,aleksandar.xyz@gmail.com,0.64,1.0,0.3076923076923077,1.0
+0,Akihiro Oyamada,admin@yomotsu.net,Shlomi Nissan,admin@betamark.com,0.2857142857142857,1.0,0.3076923076923077,0.15384615384615385
+0,Akihiro Oyamada,github@yomotsu.net,Virtulous,admin@virtulo.us,0.25,1.0,0.375,0.0
+0,Al McElrath,hello@yrns.org,Antonio Gomez,hello@antoniogomez.me,0.33333333333333337,1.0,0.2222222222222222,0.3076923076923077
