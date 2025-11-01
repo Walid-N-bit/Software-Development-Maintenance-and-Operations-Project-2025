@@ -11,8 +11,6 @@ def main():
     # Check for generic email-prefix
     email_check = True
     prefix_to_ignore = {"mail", "github", "git", "info"}
-    # prefix_to_ignore = {}
-    generic_prefixes = {"mail", "github", "git", "info"}
     # Set the thresholds to use
     thresholds = [0.5, 0.6, 0.7, 0.8, 0.9]
 
