@@ -19,7 +19,9 @@ def main():
     # If more similarity versions, add booleans or make a new function
     # similarity_default(devs, folder_path, email_check, generic_prefixes, thresholds)
     # similarity_no_c4c7(devs, folder_path, email_check, prefix_to_ignore, thresholds)
-    # similarity_modified_bird(devs, folder_path, generic_prefixes, thresholds)
+    # similarity_modified_bird(
+    #     devs, folder_path, email_check, generic_prefixes, thresholds
+    # )
 
 
 if __name__ == "__main__":

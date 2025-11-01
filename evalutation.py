@@ -287,6 +287,7 @@ from pyjarowinkler.distance import get_jaro_winkler_similarity as jaro_win_sim
 def similarity_modified_bird(
     devs: list[list[str]],
     data_folder: str,
+    email_check: bool,
     generic_prefixes: set[str],
     thresholds: list[float],
 ):
@@ -299,6 +300,24 @@ def similarity_modified_bird(
     c2: sim(prefix1, prefix2) >= t
     c3: sim(i_first_name1+last_name1, i_first_name2+last_name2) >= t
     c4: sim(i_last_name1+first_name1, i_last_name2+first_name2) >= t
+
+    Args
+    ------
+        devs : list[list[str]]
+            List of developer lists containing ["name", "email"].
+        data_folder : str
+            Base folder path where output CSV files will be saved (as "{folder}-data").
+        email_check : bool
+            If True, email prefixes matching generic domains are excluded from similarity checks.
+        threshholds : list[float]
+            List of similarity threshold values (0.0-1.0) to generate separate filtered outputs.
+
+    Outputs
+    ------
+        devs_similarity.csv
+            All developer pairs with their similarity scores
+        devs_similarity_t={threshold}.csv
+            Filtered pairs meeting threshold criteria (one per threshold)
     """
     SIMILARITY = []
 
@@ -311,7 +330,13 @@ def similarity_modified_bird(
 
         # Conditions
         c1 = jaro_win_sim(name_a, name_b, ignore_case=True)
-        c2 = jaro_win_sim(prefix_a, prefix_b, ignore_case=True)
+        if (
+            prefix_a in generic_prefixes or prefix_b in generic_prefixes
+        ) and email_check:
+            c2 = 0
+        else:
+            c2 = jaro_win_sim(prefix_a, prefix_b, ignore_case=True)
+
         c3 = 0
         c4 = 0
         if i_first_a != "" and last_a != "" and i_first_b != "" and last_b != "":
@@ -346,7 +371,7 @@ def similarity_modified_bird(
     df = pd.DataFrame(SIMILARITY, columns=cols)
 
     df.to_csv(
-        os.path.join(f"{data_folder}-data", "devs_jaro_winkler_similarity.csv"),
+        os.path.join(f"{data_folder}-data", "devs_jw_similarity.csv"),
         index=False,
         header=True,
     )
@@ -396,8 +421,10 @@ def similarity_modified_bird(
         df.to_csv(
             os.path.join(
                 f"{data_folder}-data",
-                f"devs_jaro_winkler_similarity{len(generic_prefixes)}_t={t}.csv",
+                f"devs_jw_similarity{"_email_check=" if email_check else ""}{len(generic_prefixes) if email_check else ""}_t={t}.csv",
             ),
             index=False,
             header=True,
         )
+
+
