@@ -30,7 +30,7 @@ def annotate(annotated_file: str, file_to_annotate: str, annotated_dir: str):
     if len(new_csv) > len(annotated_csv):
         raise ValueError("New File is longer!")
 
-    # Check if the name and email parts of the old file is the same as the new one.
+    # Check if the name and email parts of the old file is the same as the new
     check_new_csv = [line[1:5] for line in new_csv]
     check_old_csv = [line[1:5] for line in annotated_csv]
 
@@ -42,8 +42,8 @@ def annotate(annotated_file: str, file_to_annotate: str, annotated_dir: str):
     # If the row is otherwise the same except for true positive, use the same row from the already annotated file, and mark it true positive
     for row in annotated_csv:
         for i in range(len(new_csv)):
-            if new_csv[i][1:5] == row[1:5]:
-                # mark the line as TP
+            if new_csv[i][1:5] == row[1:5] and int(row[0]) == 1:
+                # this row of the new file is TP
                 new_csv[i][0] = 1
 
     if not os.path.exists(annotated_dir):
@@ -74,9 +74,9 @@ def annotate(annotated_file: str, file_to_annotate: str, annotated_dir: str):
 
 def main():
     # main annotated, the largest one
-    annotated_file = "annotated/devs_similarity_no_c4c7_t=0.9_ANNOTATED.csv"
+    annotated_file = "annotated/devs_similarity_no_c4c7_t=0.9_ANNOTATED_MAIN.csv"
     # new, more strict, smaller one wihtout annotations
-    file_to_annotate = "three.js-data/devs_similarity_no_c4c7_email_check=6_t=0.9.csv"
+    file_to_annotate = "three.js-data/devs_similarity_no_c4c7_t=0.99.csv"
     # Directory to put annotated files in
     annotated_dir = "annotated"
     annotate(annotated_file, file_to_annotate, annotated_dir)
