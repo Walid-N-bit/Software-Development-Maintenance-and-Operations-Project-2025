@@ -15,7 +15,18 @@ def main():
 
     # Check for generic email-prefix
     email_check = True
-    generic_prefixes = {"mail", "github", "git", "info", "hello", "me"}
+    generic_prefixes = {
+        "mail",
+        "github",
+        "git",
+        "info",
+        "hello",
+        "me",
+        "contact",
+        "dev",
+        "support",
+        "admin",
+    }
     # Set the thresholds to use
     thresholds = [0.9, 0.99]
 
