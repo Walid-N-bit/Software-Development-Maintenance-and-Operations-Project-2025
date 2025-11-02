@@ -6,7 +6,7 @@ def calc_tp(annotated_path: str) -> list[str | None]:
     """
     Calculates the true positive rate for all eligible .csv files in a folder.
     """
-    files = os.listdir(annotated_path)
+    files = sorted(os.listdir(annotated_path), reverse=True)
     results = []
     for file in files:
         if file.endswith(".csv"):
