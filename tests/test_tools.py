@@ -108,7 +108,10 @@ def test_true_positive_calc():
     # test if the invalid file is skipped
     assert result[0] == None
     # test the calculation
-    assert result[4] == "P: 6, TP: 3, FP: 3, Ratio: 1.00, File: test_annotated.csv"
+    assert (
+        result[4]
+        == "\nFile: test_annotated.csv \nPairs: 6, TP: 3, FP: 3, TP/FP: 1.00, TP/(TP+FP): 0.50"
+    )
 
 
 def test_combine_rows_correct_files():
