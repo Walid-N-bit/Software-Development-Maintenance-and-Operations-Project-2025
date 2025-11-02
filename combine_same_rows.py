@@ -34,9 +34,6 @@ def annotate(annotated_file: str, file_to_annotate: str, annotated_dir: str):
     check_new_csv = [line[1:] for line in new_csv]
     check_old_csv = [line[1:] for line in annotated_csv]
 
-    print(check_new_csv)
-    print(check_old_csv)
-
     for line in check_new_csv:
         print(line)
         if line not in check_old_csv:
