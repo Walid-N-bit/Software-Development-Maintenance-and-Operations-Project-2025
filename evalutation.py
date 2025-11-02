@@ -86,9 +86,6 @@ def similarity_default(
     """
     SIMILARITY = []
 
-    # print the 10 most common email prefixes
-    most_common_prefixes(devs, 10)
-
     for dev_a, dev_b in combinations(devs, 2):
         # Pre-process both developers
         c1, c2, c31, c32, email_a, email_b = bird_c1_c3(
@@ -101,9 +98,9 @@ def similarity_default(
         SIMILARITY.append(
             [dev_a[0], email_a, dev_b[0], email_b, c1, c2, c31, c32, c4, c5, c6, c7]
         )
-
+    print(f"\nDefault bird, email check = {str(email_check)}")
     print(f"Pairs: {len(SIMILARITY)}")
-    print("__________________________")
+    print("____________")
 
     # Save data on all pairs (might be too big -> comment out to avoid)
     cols = [
@@ -221,9 +218,6 @@ def similarity_no_c4c7(
     """
     SIMILARITY = []
 
-    # print the 10 most common email prefixes
-    most_common_prefixes(devs, 10)
-
     for dev_a, dev_b in combinations(devs, 2):
         c1, c2, c31, c32, email_a, email_b = bird_c1_c3(
             dev_a, dev_b, generic_prefixes, email_check
@@ -232,8 +226,9 @@ def similarity_no_c4c7(
         # Similarity without c4 - c7
         SIMILARITY.append([dev_a[0], email_a, dev_b[0], email_b, c1, c2, c31, c32])
 
+    print(f"\nnoc4c7 Bird, email check = {str(email_check)}")
     print(f"Pairs: {len(SIMILARITY)}")
-    print("__________________________")
+    print("____________")
 
     # Save data on all pairs (might be too big -> comment out to avoid)
     cols = [
@@ -329,7 +324,7 @@ def jaro_c1_c4(
     return c1, c2, c3, c4, email_a, email_b
 
 
-def similarity_modified_bird(
+def similarity_jw_bird(
     devs: list[list[str]],
     data_folder: str,
     email_check: bool,
@@ -366,8 +361,6 @@ def similarity_modified_bird(
     """
     SIMILARITY = []
 
-    # print the 10 most common email prefixes
-    most_common_prefixes(devs, 10)
     for dev_a, dev_b in combinations(devs, 2):
         c1, c2, c3, c4, email_a, email_b = jaro_c1_c4(
             dev_a, dev_b, generic_prefixes, email_check
@@ -375,8 +368,9 @@ def similarity_modified_bird(
         # Save similarity data for each conditions. Original names are saved
         SIMILARITY.append([dev_a[0], email_a, dev_b[0], email_b, c1, c2, c3, c4])
 
+    print(f"\nJaro-winkler bird, email check = {str(email_check)}")
     print(f"Pairs: {len(SIMILARITY)}")
-    print("__________________________")
+    print("____________")
 
     # Save data on all pairs
     cols = [
@@ -482,9 +476,6 @@ def similarity_no_c4c7_email_improved(
     """
     SIMILARITY = []
 
-    # print the 10 most common email prefixes
-    most_common_prefixes(devs, 10)
-
     for dev_a, dev_b in combinations(devs, 2):
         name_a, first_a, last_a, _, _, email_a, prefix_a = process(dev_a)
         name_b, first_b, last_b, _, _, email_b, prefix_b = process(dev_b)
@@ -504,8 +495,9 @@ def similarity_no_c4c7_email_improved(
         # Similarity without c4 - c7
         SIMILARITY.append([dev_a[0], email_a, dev_b[0], email_b, c1, c2, c31, c32])
 
+    print(f"\nno_c4c7 improved, email check -> True")
     print(f"Pairs: {len(SIMILARITY)}")
-    print("__________________________")
+    print("____________")
 
     # Save data on all pairs (might be too big -> comment out to avoid)
     cols = [
