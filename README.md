@@ -21,16 +21,22 @@
       .venv\Scripts\Activate
       ```
 
-3. Install dependencies from `requirements.txt`:
+3. Install the project in editable mode (includes all dependencies from `requirements.txt`):
 
     ```bash
-    pip install -r requirements.txt
+    pip install -e .
     ```
 
-4. Run tests:
+4. Run tests (optional):
 
     ```bash
     pytest --cov=. --cov-config=.coveragerc
     ```
 
-    Coverage configuration file .coveragerc, main functions have been ignored as their only purpose is to supply values and call other functions, nothing of interest happens in them.
+    Coverage configuration file `.coveragerc` excludes `main` functions as their only purpose is to supply values and call other functions.
+
+5. Run the program:
+
+    ```bash
+    python main.py
+    ```

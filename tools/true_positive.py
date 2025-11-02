@@ -25,7 +25,7 @@ def calc_tp(annotated_path: str) -> list[str | None]:
             pos = len(rows)
             tp = len([row for row in rows if int(row[0]) == 1])
             results.append(
-                f"P: {pos}, TP: {tp}, FP: {pos - tp}, Ratio: {tp/pos:.2f}, File: {file}"
+                f"P: {pos}, TP: {tp}, FP: {pos - tp}, Ratio: {tp/(pos-tp):.2f}, File: {file}"
             )
     return results
 

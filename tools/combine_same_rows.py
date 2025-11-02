@@ -76,7 +76,7 @@ def main():
     # main annotated, the largest one
     annotated_file = "annotated/devs_similarity_no_c4c7_t=0.9_ANNOTATED_MAIN.csv"
     # new, more strict, smaller one wihtout annotations
-    file_to_annotate = "three.js-data/devs_similarity_no_c4c7_t=0.99.csv"
+    file_to_annotate = "three.js-data/devs_similarity_no_c4c7_improved_t=0.9.csv"
     # Directory to put annotated files in
     annotated_dir = "annotated"
     annotate(annotated_file, file_to_annotate, annotated_dir)

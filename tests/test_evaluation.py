@@ -1,17 +1,17 @@
 import os
-import pytest
 from shutil import rmtree
 
-from ..evalutation import (
+from evaluators.similarity_default import (
     bird_c1_c3,
     bird_c4_c7,
     similarity_default,
-    similarity_no_c4c7,
-    jaro_c1_c4,
-    similarity_modified_bird,
 )
 
-from ..tools import get_repository
+from evaluators.similarity_jaro import similarity_jw_bird, jaro_c1_c4
+from evaluators.similarity_no_c4c7 import similarity_no_c4c7
+from evaluators.similarity_no_c4c7_improved import similarity_no_c4c7_email_improved
+
+from tools.helpers import get_repository
 
 DEV_A = ["John Doe", "john.doe@example.com"]
 DEV_B = ["Jane Doe", "jane.doe@example.com"]
@@ -165,7 +165,7 @@ def test_c1_c4_jaro_email():
 
 
 def test_sim_jaro_no_email(capsys):
-    similarity_modified_bird(DEVS, DATAFOLDER, False, GENERIC_PREFIXES, THRESHOLDS)
+    similarity_jw_bird(DEVS, DATAFOLDER, False, GENERIC_PREFIXES, THRESHOLDS)
 
     captured = capsys.readouterr()
 
@@ -181,7 +181,7 @@ def test_sim_jaro_no_email(capsys):
 
 
 def test_sim_jaro_email(capsys):
-    similarity_modified_bird(DEVS, DATAFOLDER, True, GENERIC_PREFIXES, THRESHOLDS)
+    similarity_jw_bird(DEVS, DATAFOLDER, True, GENERIC_PREFIXES, THRESHOLDS)
 
     captured = capsys.readouterr()
 
@@ -192,5 +192,65 @@ def test_sim_jaro_email(capsys):
         os.path.join(
             DATAFOLDER,
             f"devs_jw_similarity_email_check={len(GENERIC_PREFIXES)}_t={THRESHOLDS[0]}.csv",
+        )
+    )
+
+
+def test_sim_c4c7_improved(capsys):
+    similarity_no_c4c7_email_improved(DEVS, DATAFOLDER, GENERIC_PREFIXES, THRESHOLDS)
+
+    captured = capsys.readouterr()
+
+    assert "Pairs: 6" in captured.out
+    assert f"Threshold: {THRESHOLDS[0]}" in captured.out
+    assert os.path.isfile(os.path.join(DATAFOLDER, "devs_similarity.csv"))
+    assert os.path.isfile(
+        os.path.join(
+            DATAFOLDER,
+            f"devs_similarity_no_c4c7_improved_t={THRESHOLDS[0]}.csv",
+        )
+    )
+
+
+def test_sim_c4c7_improved_generic_c2is0(capsys):
+    """When two devs have generic email, and names are different."""
+    similarity_no_c4c7_email_improved(
+        [["Mark Twain", "github@gmail.com"], ["John Doe", "github@gmail.com"]],
+        DATAFOLDER,
+        GENERIC_PREFIXES,
+        THRESHOLDS,
+    )
+
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert "Pairs: 1" in captured.out
+    assert f"Threshold: {THRESHOLDS[0]}" in captured.out
+    assert os.path.isfile(os.path.join(DATAFOLDER, "devs_similarity.csv"))
+    assert os.path.isfile(
+        os.path.join(
+            DATAFOLDER,
+            f"devs_similarity_no_c4c7_improved_t={THRESHOLDS[0]}.csv",
+        )
+    )
+
+
+def test_sim_c4c7_improved_generic_c2not0(capsys):
+    """When two devs have generic email, and names are similar."""
+    similarity_no_c4c7_email_improved(
+        [["Jane Doe", "github@gmail.com"], ["John Doe", "github@gmail.com"]],
+        DATAFOLDER,
+        GENERIC_PREFIXES,
+        THRESHOLDS,
+    )
+
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert "Pairs: 1" in captured.out
+    assert f"Threshold: {THRESHOLDS[0]}" in captured.out
+    assert os.path.isfile(os.path.join(DATAFOLDER, "devs_similarity.csv"))
+    assert os.path.isfile(
+        os.path.join(
+            DATAFOLDER,
+            f"devs_similarity_no_c4c7_improved_t={THRESHOLDS[0]}.csv",
         )
     )

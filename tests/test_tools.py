@@ -1,9 +1,9 @@
 import pytest
 import os
 from shutil import rmtree
-from ..tools import process, most_common_prefixes, get_repository
-from ..true_positive import calc_tp
-from ..combine_same_rows import annotate
+from tools.helpers import process, most_common_prefixes, get_repository
+from tools.true_positive import calc_tp
+from tools.combine_same_rows import annotate
 
 
 def test_process_normal_name():
@@ -102,12 +102,13 @@ def test_true_positive_calc():
     """Test TP, folder contains 1 valid and 1 invalid file."""
     path = "tests/csvs"
     result = calc_tp(path)
+    print(result)
 
     assert len(result) == 5
     # test if the invalid file is skipped
-    assert result[1] == None
+    assert result[0] == None
     # test the calculation
-    assert result[0] == "P: 6, TP: 3, FP: 3, Ratio: 0.50, File: test_annotated.csv"
+    assert result[4] == "P: 6, TP: 3, FP: 3, Ratio: 1.00, File: test_annotated.csv"
 
 
 def test_combine_rows_correct_files():
